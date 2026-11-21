@@ -1455,7 +1455,7 @@ const INFO_FIELDS = [
   { k: "telephone_concierge", l: "Téléphone de la conciergerie", ph: "ex. +212 6 …" },
   { k: "adresse", l: "Adresse de l'appartement", ph: "rue, quartier, Diabat" },
   { k: "localisation", l: "Lien de localisation", ph: "lien Google Maps" },
-  { k: "fiche_police", l: "Lien de la fiche de police", ph: "adresse de la page de la fiche de police" },
+  { k: "fiche_police", l: "Lien de la fiche de police", ph: "lien du logement, copié dans l'appli Fiche de police" },
   { k: "heure_arrivee", l: "Heure d'arrivée", ph: "ex. 15:00" },
   { k: "heure_depart", l: "Heure de départ", ph: "ex. 11:00" },
   { k: "wifi_nom", l: "Nom du Wi-Fi", ph: "" },
@@ -1514,6 +1514,7 @@ function msgValues(b, lang, name) {
   for (const f of INFO_FIELDS) v[f.k] = String(info[f.k] || "").trim();
   const pk = lang !== "fr" ? String(info["parking_" + lang] || "").trim() : "";
   if (pk) v.parking = pk;
+  if (b && v.fiche_police) v.fiche_police = ficheLink(v.fiche_police, b, lang, name);
   v.voyageur = String(name || "").trim();
   if (b) {
     const c = calcBooking(b);
@@ -1524,6 +1525,19 @@ function msgValues(b, lang, name) {
     v.plateforme = { airbnb: "Airbnb", booking: "Booking.com" }[b.platform] || "";
   }
   return v;
+}
+// Lien du logement de l'appli Fiche de police : on y ajoute les dates, le nombre de voyageurs, le prénom et la langue.
+function ficheLink(base, b, lang, name) {
+  if (!/[?&]p=/.test(base)) return base;
+  try {
+    const u = new URL(base);
+    if (isDate(b.checkin)) u.searchParams.set("arr", b.checkin);
+    if (isDate(b.checkout)) u.searchParams.set("dep", b.checkout);
+    if (b.guests) u.searchParams.set("nb", String(b.guests));
+    const ref = String(name || "").trim(); if (ref) u.searchParams.set("ref", ref.slice(0, 60));
+    u.searchParams.set("lang", lang);
+    return u.toString();
+  } catch (e) { return base; }
 }
 function fillTemplate(text, vals) {
   const missing = new Set(); let html = "", plain = "", last = 0;
