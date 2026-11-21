@@ -97,8 +97,9 @@ h1,h2,h3,h4{text-wrap:balance;margin:0}
 main{padding-block:20px 48px}
 @media (max-width:820px){
   .tabs{position:fixed;top:auto;bottom:0;left:0;right:0;border-bottom:0;border-top:1px solid var(--line);background:var(--surface);padding-bottom:env(safe-area-inset-bottom,0px)}
-  .tabs-in{display:grid;grid-template-columns:repeat(6,1fr);gap:0}
-  .tab{flex-direction:column;gap:3px;padding:8px 0 7px;font-size:.68rem;border-bottom:0;border-top:2px solid transparent;justify-content:center}
+  .tabs-in{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0}
+  .tab{flex-direction:column;gap:3px;padding:8px 0 7px;font-size:.64rem;letter-spacing:-.01em;border-bottom:0;border-top:2px solid transparent;justify-content:center;min-width:0}
+  .tab .s{max-width:100%;overflow:hidden;text-overflow:ellipsis}
   .tab[aria-current="page"]{border-top-color:var(--brand);background:var(--wine-soft)}
   .tab .l{display:none}.tab .s{display:block}
   main{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
@@ -349,6 +350,18 @@ details.how ul{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:colu
 .loading{padding:40px 20px;text-align:center;color:var(--muted)}
 .loading .sk{height:14px;border-radius:7px;background:var(--surface-2);margin:10px auto;max-width:420px}
 
+.tpl-list{display:flex;flex-direction:column;gap:6px}
+.tpl{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 12px;cursor:pointer}
+.tpl:hover{background:var(--surface-2)}
+.tpl[aria-pressed="true"]{border-color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand);background:var(--surface-2)}
+.tpl b{display:block;font-size:.92rem}
+.tpl small{display:block;color:var(--muted);font-size:.76rem}
+.msg-preview{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--surface-2);border-radius:12px;padding:14px 16px;font-size:.95rem;line-height:1.6}
+.msg-preview[dir="rtl"]{font-size:1.02rem;line-height:1.8;font-family:"Geeza Pro","Noto Naskh Arabic","Segoe UI",Tahoma,var(--f-body)}
+.msg-preview .filled{background:var(--wine-soft);border-radius:4px;padding:0 2px}
+mark.miss{background:var(--warn-soft);color:var(--warn);border-radius:4px;padding:0 3px;font-weight:700;box-shadow:inset 0 0 0 1px var(--warn)}
+textarea.msg-ta[dir="rtl"]{font-family:"Geeza Pro","Noto Naskh Arabic","Segoe UI",Tahoma,var(--f-body)}
+
 /* ---------- Fenêtre modale ---------- */
 dialog.modal{border:0;padding:0;border-radius:18px;width:min(680px,calc(100% - 24px));max-height:calc(100% - 32px);background:var(--surface);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.25)}
 dialog.modal[open]{display:flex;flex-direction:column}
@@ -450,6 +463,7 @@ const MONTHS_SHORT = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.",
 const VIEW_LIST = [
   { k: "accueil", l: "Tableau de bord", s: "Accueil", ic: "home" },
   { k: "sejours", l: "Réservations", s: "Séjours", ic: "door" },
+  { k: "messages", l: "Messages", s: "Messages", ic: "chat" },
   { k: "depenses", l: "Dépenses", s: "Dépenses", ic: "receipt" },
   { k: "agenda", l: "Calendrier et tâches", s: "Agenda", ic: "cal" },
   { k: "bilan", l: "Résultats", s: "Bilan", ic: "chart" },
@@ -481,7 +495,9 @@ const ICONS = {
   box: '<path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/>',
   sofa: '<path d="M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><path d="M3 12a2 2 0 0 1 4 0v2h10v-2a2 2 0 0 1 4 0v6H3z"/><path d="M6 18v2M18 18v2"/>',
   dots: '<circle cx="6" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="18" cy="12" r="1.3" fill="currentColor"/>',
-  person: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>'
+  person: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>',
+  chat: '<path d="M4 5.5h16v10.5H10l-4.5 3.5V16H4z"/><path d="M8 9.5h8M8 12.5h5"/>',
+  copy: '<rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/>'
 };
 const CAT_ICON = { loyer: "house", wifi: "wifi", electricite: "bolt", charges: "house", conciergerie: "key", entretien: "wrench", equipement: "sofa", menage: "sparkle", fournitures: "box", autres: "dots" };
 function icon(name, extra = "") {
@@ -561,12 +577,14 @@ const validId = id => typeof id === "string" && /^[A-Za-z0-9_\-~:@+.]{1,120}$/.t
    ========================================================= */
 function baseDefaults() {
   return { rent: 4500, wifi: 50, elecLow: 150, elecBudget: 200, sharedTotal: 0, sharedUnits: 3, conciergeRate: 10, conciergeBase: "nights",
-    rates: { airbnb: 15.5, booking: 15, direct: 0, autre: 0 }, madPerChf: 11.5, madPerEur: 10.8, startMonth: null, capacity: 4 };
+    rates: { airbnb: 15.5, booking: 15, direct: 0, autre: 0 }, madPerChf: 11.5, madPerEur: 10.8, startMonth: null, capacity: 4, info: {} };
 }
 function mergeSettings(d) {
   const b = baseDefaults(); d = d && typeof d === "object" ? d : {};
   const out = { ...b };
-  for (const k of Object.keys(b)) if (k !== "rates" && d[k] !== undefined && d[k] !== null) out[k] = d[k];
+  for (const k of Object.keys(b)) if (k !== "rates" && k !== "info" && d[k] !== undefined && d[k] !== null) out[k] = d[k];
+  out.info = {};
+  if (d.info && typeof d.info === "object") for (const [k, v] of Object.entries(d.info)) if (typeof v === "string") out.info[k] = v;
   out.rates = { ...b.rates, ...(d.rates && typeof d.rates === "object" ? d.rates : {}) };
   for (const k of ["rent", "wifi", "elecLow", "elecBudget", "sharedTotal", "sharedUnits", "conciergeRate", "madPerChf", "madPerEur", "capacity"]) out[k] = num(out[k]);
   for (const k of Object.keys(out.rates)) out.rates[k] = num(out.rates[k]);
@@ -578,12 +596,13 @@ function mergeSettings(d) {
 const S = {
   mode: "loading", // loading | db | local | memory
   db: null, readOnly: false, slow: false, dbError: null,
-  got: { bookings: false, expenses: false, tasks: false, settings: false },
+  got: { bookings: false, expenses: false, tasks: false, settings: false, messages: false },
   settingsExists: false,
   settings: mergeSettings({}),
-  bookings: [], expenses: [], tasks: [],
+  bookings: [], expenses: [], tasks: [], messages: [],
   ui: {
     view: "accueil", month: ymOf(todayStr()), selDay: null,
+    msg: { bookingId: undefined, name: null, lang: "fr", key: "arrivee" },
     f: { bkPeriod: "month", bkPlatform: "", bkStatus: "", bkPay: "", bkQ: "", exPeriod: "month", exCat: "", exPaid: "", exQ: "", tk: "open" }
   }
 };
@@ -601,7 +620,7 @@ function toMAD(e) {
   if (e.currency === "EUR") return r2(a * num(S.settings.madPerEur));
   return a;
 }
-const isLoading = () => S.mode === "loading" || (S.mode === "db" && !(S.got.bookings && S.got.expenses && S.got.tasks && S.got.settings));
+const isLoading = () => S.mode === "loading" || (S.mode === "db" && !(S.got.bookings && S.got.expenses && S.got.tasks && S.got.settings && S.got.messages));
 const hasSample = () => [...S.bookings, ...S.expenses, ...S.tasks].some(x => x.sample);
 
 /* =========================================================
@@ -782,7 +801,7 @@ function loadLocal() {
     if (raw) {
       const d = JSON.parse(raw);
       S.settings = mergeSettings(d.settings); S.settingsExists = !!d.settings;
-      S.bookings = Array.isArray(d.bookings) ? d.bookings : []; S.expenses = Array.isArray(d.expenses) ? d.expenses : []; S.tasks = Array.isArray(d.tasks) ? d.tasks : [];
+      S.bookings = Array.isArray(d.bookings) ? d.bookings : []; S.expenses = Array.isArray(d.expenses) ? d.expenses : []; S.tasks = Array.isArray(d.tasks) ? d.tasks : []; S.messages = Array.isArray(d.messages) ? d.messages : [];
     }
     return true;
   } catch (e) { return false; }
@@ -790,13 +809,13 @@ function loadLocal() {
 function saveLocal() {
   if (S.mode !== "local" && S.mode !== "memory") return;
   try {
-    localStorage.setItem(APP_KEY, JSON.stringify({ settings: S.settingsExists ? S.settings : null, bookings: S.bookings, expenses: S.expenses, tasks: S.tasks }));
+    localStorage.setItem(APP_KEY, JSON.stringify({ settings: S.settingsExists ? S.settings : null, bookings: S.bookings, expenses: S.expenses, tasks: S.tasks, messages: S.messages }));
     S.mode = "local";
   } catch (e) { S.mode = "memory"; }
 }
 function subscribe() {
   const timer = setTimeout(() => { if (isLoading() || !S.confirmed) { S.slow = true; render(); } }, 10000);
-  const confirmed = { bookings: false, expenses: false, tasks: false, settings: false };
+  const confirmed = { bookings: false, expenses: false, tasks: false, settings: false, messages: false };
   const mark = (k, snap) => {
     S.got[k] = true;
     if (!snap.metadata.fromCache) confirmed[k] = true;
@@ -810,7 +829,7 @@ function subscribe() {
     for (const k of Object.keys(S.got)) S.got[k] = true;
     scheduleRender();
   };
-  for (const c of ["bookings", "expenses", "tasks"]) {
+  for (const c of ["bookings", "expenses", "tasks", "messages"]) {
     S.db.collection(c).onSnapshot(snap => {
       S[c] = snap.docs.map(d => ({ ...d.data(), id: d.id }));
       mark(c, snap);
@@ -877,7 +896,7 @@ function renderBanners() {
 }
 function banner(cls, ic, html, action = "") { return `<div class="banner ${cls}">${icon(ic)}<div class="b-txt">${html}</div>${action}</div>`; }
 
-const VIEWS = { accueil: viewDashboard, sejours: viewBookings, depenses: viewExpenses, agenda: viewAgenda, bilan: viewResults, reglages: viewSettings };
+const VIEWS = { accueil: viewDashboard, sejours: viewBookings, messages: viewMessages, depenses: viewExpenses, agenda: viewAgenda, bilan: viewResults, reglages: viewSettings };
 function renderView() {
   const el = $("#view");
   const ae = document.activeElement;
@@ -1032,7 +1051,7 @@ function todoData() {
     if (m.wifi.kind !== "real") missing.push({ k: "wifi", txt: `Wi-Fi de ${monthName(cm)} non saisi`, sub: `${mad(S.settings.wifi)} prévus` });
     if (m.elec.kind !== "real") missing.push({ k: "electricite", txt: `Électricité et chauffage de ${monthName(cm)} à saisir`, sub: `estimation ${mad(S.settings.elecLow)} à ${mad(S.settings.elecBudget)} en attendant` });
   }
-  return { lateTasks, soonTasks, payments, unpaid, toClose, requests, missing };
+  return { lateTasks, soonTasks, payments, unpaid, toClose, requests, missing, msgs: messageTodo() };
 }
 function todoHTML() {
   const d = todoData();
@@ -1049,6 +1068,7 @@ function todoHTML() {
   }
   if (d.toClose.length) g.push(grp("Séjours à clôturer", "blue", d.toClose.length, d.toClose.map(b => `<div class="todo-item"><div class="t">${esc(b.guest)} ${sampleTag(b)}<small>départ le ${fmtDate(b.checkout, { day: "numeric", month: "long" })}</small></div><button class="btn tiny ghost" data-act="bk-close" data-id="${b.id}">Marquer terminé</button></div>`).join("")));
   if (d.requests.length) g.push(grp("Demandes à confirmer", "sand", d.requests.length, d.requests.map(b => `<div class="todo-item"><div class="t">${esc(b.guest)} ${sampleTag(b)}<small>${fmtRange(b.checkin, b.checkout)}</small></div><button class="btn tiny ghost" data-act="edit-booking" data-id="${b.id}">Ouvrir</button></div>`).join("")));
+  if (d.msgs.length) g.push(grp("Messages à envoyer", "blue", d.msgs.length, d.msgs.map(x => `<div class="todo-item"><div class="t">${x.txt} · ${esc(guestFirst(x.b))} ${sampleTag(x.b)}<small>${x.sub}</small></div><button class="btn tiny ghost" data-act="prep-msg" data-id="${x.b.id}" data-k="${x.key}">Préparer</button></div>`).join("")));
   if (d.missing.length) g.push(grp("Charges du mois à saisir", "blue", d.missing.length, d.missing.map(x => `<div class="todo-item"><div class="t">${x.txt}<small>${x.sub}</small></div><button class="btn tiny ghost" data-act="${x.k === "electricite" ? "new-expense" : "gen-fixed"}" data-cat="${x.k}">${x.k === "electricite" ? "Saisir" : "Ajouter"}</button></div>`).join("")));
   if (d.soonTasks.length) g.push(grp("Tâches des 7 prochains jours", "blue", d.soonTasks.length, d.soonTasks.slice(0, 6).map(t => `<div class="todo-item"><div class="t">${esc(t.title)} ${sampleTag(t)}<small>${fmtDate(t.date, { weekday: "long", day: "numeric", month: "long" })} · ${TSTATUS[t.status] || ""}</small></div><button class="btn tiny ghost" data-act="task-done" data-id="${t.id}">Terminer</button></div>`).join("")));
   return `<div class="card-head"><h3>À traiter</h3><button class="linkbtn small" data-act="go" data-v="agenda">Toutes les tâches</button></div>` + (g.length ? g.join("") : `<div class="empty">Tout est à jour : aucun paiement, aucune dépense ni tâche en attente.</div>`);
@@ -1426,6 +1446,200 @@ function viewResults() {
 }
 
 /* =========================================================
+   Messages aux voyageurs
+   ========================================================= */
+const LANGS = [{ k: "fr", l: "Français" }, { k: "en", l: "English" }, { k: "ar", l: "العربية" }];
+const INFO_FIELDS = [
+  { k: "hote", l: "Signature (votre prénom)", ph: "ex. votre prénom" },
+  { k: "concierge", l: "Conciergerie (nom à afficher)", ph: "ex. prénom de la personne" },
+  { k: "telephone_concierge", l: "Téléphone de la conciergerie", ph: "ex. +212 6 …" },
+  { k: "adresse", l: "Adresse de l'appartement", ph: "rue, quartier, Diabat" },
+  { k: "localisation", l: "Lien de localisation", ph: "lien Google Maps" },
+  { k: "heure_arrivee", l: "Heure d'arrivée", ph: "ex. 15:00" },
+  { k: "heure_depart", l: "Heure de départ", ph: "ex. 11:00" },
+  { k: "wifi_nom", l: "Nom du Wi-Fi", ph: "" },
+  { k: "wifi_mdp", l: "Mot de passe du Wi-Fi", ph: "" },
+  { k: "parking", l: "Indications pour la place de stationnement", ph: "ex. place n° 2, à droite de l'entrée" }
+];
+const PH = { voyageur: "prénom du voyageur", arrivee: "date d'arrivée", depart: "date de départ", nuits: "nombre de nuits", voyageurs: "nombre de voyageurs", plateforme: "plateforme",
+  hote: "signature", concierge: "conciergerie", telephone_concierge: "téléphone de la conciergerie", adresse: "adresse", localisation: "lien de localisation",
+  heure_arrivee: "heure d'arrivée", heure_depart: "heure de départ", wifi_nom: "nom du Wi-Fi", wifi_mdp: "mot de passe du Wi-Fi", parking: "indications de stationnement" };
+const MSG_DEFAULTS = [
+  { key: "bienvenue", title: "Confirmation de réservation", when: "Dès la réservation confirmée",
+    fr: "Bonjour {voyageur},\n\nMerci pour votre réservation ! Nous sommes ravis de vous accueillir à Diabat, près d'Essaouira, du {arrivee} au {depart} ({nuits} nuits).\n\nL'appartement dispose de deux chambres, d'une terrasse partagée et d'une place de stationnement.\n\nQuelques jours avant votre arrivée, nous vous enverrons toutes les informations pratiques. N'hésitez pas à nous écrire si vous avez des questions.\n\nÀ bientôt,\n{hote}",
+    en: "Hello {voyageur},\n\nThank you for your booking! We look forward to welcoming you to Diabat, near Essaouira, from {arrivee} to {depart} ({nuits} nights).\n\nThe apartment has two bedrooms, a shared terrace and a parking space.\n\nA few days before your arrival, we will send you all the practical information. Feel free to message us if you have any questions.\n\nSee you soon,\n{hote}",
+    ar: "مرحباً {voyageur}،\n\nشكراً على حجزكم! يسعدنا استقبالكم في ديابات، قرب الصويرة، من {arrivee} إلى {depart} (عدد الليالي: {nuits}).\n\nتضم الشقة غرفتي نوم، وتراساً مشتركاً، ومكاناً مخصصاً لركن السيارة.\n\nسنرسل إليكم جميع المعلومات العملية قبل وصولكم ببضعة أيام. لا تترددوا في مراسلتنا إن كانت لديكم أي أسئلة.\n\nإلى اللقاء قريباً،\n{hote}" },
+  { key: "arrivee", title: "Instructions d'arrivée", when: "2 à 3 jours avant l'arrivée",
+    fr: "Bonjour {voyageur},\n\nVotre séjour approche ! Voici les informations pour votre arrivée le {arrivee} :\n\n• Arrivée à partir de {heure_arrivee}\n• Adresse : {adresse}\n• Localisation : {localisation}\n• Clés : {concierge} vous accueillera et vous remettra les clés. Merci d'indiquer votre heure d'arrivée au {telephone_concierge}.\n• Stationnement : une place est réservée pour vous. {parking}\n\nBon voyage et à très bientôt,\n{hote}",
+    en: "Hello {voyageur},\n\nYour stay is coming up! Here is everything you need for your arrival on {arrivee}:\n\n• Check-in from {heure_arrivee}\n• Address: {adresse}\n• Location: {localisation}\n• Keys: {concierge} will welcome you and hand over the keys. Please share your arrival time at {telephone_concierge}.\n• Parking: a parking space is reserved for you. {parking}\n\nSafe travels, see you very soon,\n{hote}",
+    ar: "مرحباً {voyageur}،\n\nاقترب موعد إقامتكم! إليكم المعلومات الخاصة بوصولكم يوم {arrivee}:\n\n• الوصول ابتداءً من الساعة {heure_arrivee}\n• العنوان: {adresse}\n• الموقع على الخريطة: {localisation}\n• المفاتيح: سيتم استقبالكم وتسليمكم المفاتيح من طرف {concierge}. يُرجى إعلامنا بموعد وصولكم على الرقم {telephone_concierge}.\n• ركن السيارة: يوجد مكان مخصص لكم. {parking}\n\nرحلة سعيدة، وإلى اللقاء قريباً،\n{hote}" },
+  { key: "wifi", title: "Wi-Fi et bienvenue sur place", when: "Le jour de l'arrivée",
+    fr: "Bienvenue {voyageur} !\n\nNous espérons que vous êtes bien installés.\n\n• Wi-Fi : {wifi_nom}\n• Mot de passe : {wifi_mdp}\n\nLa terrasse est partagée avec les autres appartements de la maison : merci d'y garder le calme le soir.\nPour toute question pendant le séjour : {telephone_concierge}\n\nTrès bon séjour à Diabat !\n{hote}",
+    en: "Welcome {voyageur}!\n\nWe hope you have settled in well.\n\n• Wi-Fi: {wifi_nom}\n• Password: {wifi_mdp}\n\nThe terrace is shared with the other apartments in the house, so please keep noise down in the evening.\nFor any question during your stay: {telephone_concierge}\n\nEnjoy your stay in Diabat!\n{hote}",
+    ar: "أهلاً وسهلاً بكم {voyageur}!\n\nنتمنى أن تكونوا قد استقررتم بشكل جيد.\n\n• شبكة الواي فاي: {wifi_nom}\n• كلمة المرور: {wifi_mdp}\n\nالتراس مشترك مع باقي شقق المنزل، لذا نرجو الحفاظ على الهدوء في المساء.\nلأي سؤال خلال إقامتكم: {telephone_concierge}\n\nنتمنى لكم إقامة ممتعة في ديابات!\n{hote}" },
+  { key: "regles", title: "Règles de la maison", when: "Avant ou à l'arrivée",
+    fr: "Bonjour {voyageur},\n\nPour que tout se passe au mieux, voici quelques règles de la maison :\n\n• L'appartement accueille 4 personnes au maximum.\n• La terrasse est partagée avec les autres appartements de la maison : merci de la laisser propre et de respecter le calme, surtout le soir.\n• Merci de vous garer uniquement sur la place réservée à l'appartement.\n• Départ avant {heure_depart} le {depart}.\n\nMerci beaucoup et bon séjour,\n{hote}",
+    en: "Hello {voyageur},\n\nTo make sure everything goes smoothly, here are a few house rules:\n\n• The apartment accommodates up to 4 guests.\n• The terrace is shared with the other apartments in the house: please keep it tidy and quiet, especially in the evening.\n• Please park only in the space reserved for the apartment.\n• Check-out before {heure_depart} on {depart}.\n\nThank you and enjoy your stay,\n{hote}",
+    ar: "مرحباً {voyageur}،\n\nلكي تمر إقامتكم في أفضل الظروف، إليكم بعض قواعد المنزل:\n\n• تتسع الشقة لأربعة أشخاص كحد أقصى.\n• التراس مشترك مع باقي شقق المنزل: نرجو الحفاظ على نظافته واحترام الهدوء، خاصة في المساء.\n• يُرجى ركن السيارة في المكان المخصص للشقة فقط.\n• المغادرة قبل الساعة {heure_depart} يوم {depart}.\n\nشكراً جزيلاً، وإقامة طيبة،\n{hote}" },
+  { key: "depart", title: "Rappel du départ", when: "La veille du départ",
+    fr: "Bonjour {voyageur},\n\nNous espérons que vous profitez de votre séjour ! Petit rappel : le départ est prévu demain, {depart}, avant {heure_depart}.\n\nAvant de partir, merci de :\n• fermer les fenêtres et éteindre les lumières et le chauffage ;\n• laisser les clés comme convenu avec {concierge}.\n\nMerci et bon retour,\n{hote}",
+    en: "Hello {voyageur},\n\nWe hope you are enjoying your stay! A quick reminder: check-out is tomorrow, {depart}, before {heure_depart}.\n\nBefore leaving, please:\n• close the windows and switch off the lights and heating;\n• leave the keys as agreed with {concierge}.\n\nThank you and safe travels home,\n{hote}",
+    ar: "مرحباً {voyageur}،\n\nنأمل أن تكون إقامتكم ممتعة! نذكّركم بأن موعد المغادرة غداً، {depart}، قبل الساعة {heure_depart}.\n\nقبل المغادرة، نرجو منكم:\n• إغلاق النوافذ وإطفاء الأضواء والتدفئة؛\n• ترك المفاتيح حسب ما تم الاتفاق عليه مع {concierge}.\n\nشكراً لكم، ورحلة عودة سعيدة،\n{hote}" },
+  { key: "avis", title: "Merci et demande d'avis", when: "Après le départ",
+    fr: "Bonjour {voyageur},\n\nMerci d'avoir séjourné chez nous à Diabat ! Nous espérons que vous avez passé un excellent moment.\n\nSi vous avez quelques minutes, un avis sur {plateforme} nous aiderait beaucoup. Et si quelque chose peut être amélioré, dites-le-nous directement : nous lirons votre message avec attention.\n\nAu plaisir de vous accueillir à nouveau,\n{hote}",
+    en: "Hello {voyageur},\n\nThank you for staying with us in Diabat! We hope you had a wonderful time.\n\nIf you have a few minutes, a review on {plateforme} would help us a lot. And if anything could be improved, please tell us directly: we will read your message carefully.\n\nWe would be delighted to welcome you again,\n{hote}",
+    ar: "مرحباً {voyageur}،\n\nشكراً لاختياركم الإقامة عندنا في ديابات! نتمنى أن تكونوا قد قضيتم وقتاً رائعاً.\n\nإذا سمح وقتكم، فإن تقييمكم على {plateforme} سيساعدنا كثيراً. وإن كان هناك ما يمكن تحسينه، فلا تترددوا في إخبارنا مباشرة، وسنقرأ رسالتكم باهتمام.\n\nيسعدنا استقبالكم مرة أخرى،\n{hote}" }
+];
+const pickTpl = m => { const o = {}; for (const k of ["title", "when", "fr", "en", "ar"]) if (typeof m[k] === "string") o[k] = m[k]; return o; };
+function templates() {
+  const over = Object.fromEntries(S.messages.map(m => [m.id, m]));
+  const list = MSG_DEFAULTS.map(d => ({ ...d, ...(over[d.key] ? pickTpl(over[d.key]) : {}), custom: false, edited: !!over[d.key] }));
+  const customs = S.messages.filter(m => m.custom).sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || "")));
+  for (const m of customs) list.push({ key: m.id, title: m.title || "Modèle sans titre", when: m.when || "", fr: m.fr || "", en: m.en || "", ar: m.ar || "", custom: true, edited: false });
+  return list;
+}
+const guestFirst = b => (b && b.guest ? b.guest.replace(/^Exemple\s*·\s*/, "").trim() : "");
+function fmtLang(iso, lang) {
+  const loc = lang === "en" ? "en-GB" : lang === "ar" ? "ar" : "fr-FR";
+  try { return new Date(toUTC(iso)).toLocaleDateString(loc, { timeZone: "UTC", weekday: "long", day: "numeric", month: "long", numberingSystem: "latn" }); }
+  catch (e) { return fmtDate(iso, { weekday: "long", day: "numeric", month: "long" }); }
+}
+function msgValues(b, lang, name) {
+  const info = S.settings.info || {}, v = {};
+  for (const f of INFO_FIELDS) v[f.k] = String(info[f.k] || "").trim();
+  v.voyageur = String(name || "").trim();
+  if (b) {
+    const c = calcBooking(b);
+    v.arrivee = isDate(b.checkin) ? fmtLang(b.checkin, lang) : "";
+    v.depart = isDate(b.checkout) ? fmtLang(b.checkout, lang) : "";
+    v.nuits = c.nights ? String(c.nights) : "";
+    v.voyageurs = b.guests ? String(b.guests) : "";
+    v.plateforme = { airbnb: "Airbnb", booking: "Booking.com" }[b.platform] || "";
+  }
+  return v;
+}
+function fillTemplate(text, vals) {
+  const missing = new Set(); let html = "", plain = "", last = 0;
+  const re = /\{([a-z_]+)\}/g; let m;
+  while ((m = re.exec(text))) {
+    const lit = text.slice(last, m.index); html += esc(lit); plain += lit; last = re.lastIndex;
+    const k = m[1];
+    if (!(k in PH)) { html += esc(m[0]); plain += m[0]; continue; }
+    if (vals[k]) { html += `<span class="filled">${esc(vals[k])}</span>`; plain += vals[k]; }
+    else { missing.add(k); const mk = `[à compléter : ${PH[k]}]`; html += `<mark class="miss">${esc(mk)}</mark>`; plain += mk; }
+  }
+  const rest = text.slice(last); html += esc(rest); plain += rest;
+  return { html, plain, missing: [...missing] };
+}
+function messageTodo() {
+  const today = todayStr(), in3 = addDays(today, 3), tomorrow = addDays(today, 1), ago3 = addDays(today, -3), out = [];
+  const d = s => fmtDate(s, { weekday: "short", day: "numeric", month: "short" });
+  for (const b of S.bookings) {
+    if (!isDate(b.checkin) || !isDate(b.checkout)) continue;
+    const sent = b.sent || {};
+    if (b.status === "confirmee" && b.checkin >= today && b.checkin <= in3 && !sent.arrivee) out.push({ b, key: "arrivee", txt: "Instructions d'arrivée", sub: `arrivée ${d(b.checkin)}`, date: b.checkin });
+    if (b.status === "confirmee" && b.checkout === tomorrow && !sent.depart) out.push({ b, key: "depart", txt: "Rappel du départ", sub: "départ demain", date: b.checkout });
+    if ((b.status === "confirmee" || b.status === "terminee") && b.checkout <= today && b.checkout >= ago3 && !sent.avis) out.push({ b, key: "avis", txt: "Merci et demande d'avis", sub: `parti ${d(b.checkout)}`, date: b.checkout });
+  }
+  return out.sort((a, z) => a.date.localeCompare(z.date));
+}
+function defaultMsgBookingId() {
+  const todo = messageTodo(); if (todo.length) return todo[0].b.id;
+  const today = todayStr();
+  const next = S.bookings.filter(b => (b.status === "confirmee" || b.status === "demande") && isDate(b.checkout) && b.checkout >= today).sort((a, b) => a.checkin.localeCompare(b.checkin))[0];
+  return next ? next.id : "";
+}
+function msgBookingOptions(sel) {
+  const today = todayStr(), from = addDays(today, -60);
+  const label = b => `${esc(guestFirst(b) || "Sans nom")} · ${fmtRange(b.checkin, b.checkout)}`;
+  const ok = b => isDate(b.checkin) && isDate(b.checkout) && b.status !== "annulee";
+  const up = S.bookings.filter(b => ok(b) && b.checkout >= today).sort((a, b) => a.checkin.localeCompare(b.checkin));
+  const past = S.bookings.filter(b => ok(b) && b.checkout < today && b.checkout >= from).sort((a, b) => b.checkin.localeCompare(a.checkin));
+  const o = b => `<option value="${b.id}" ${b.id === sel ? "selected" : ""}>${label(b)}</option>`;
+  return `<option value="" ${!sel ? "selected" : ""}>Sans réservation (texte général)</option>${up.length ? `<optgroup label="En cours et à venir">${up.map(o).join("")}</optgroup>` : ""}${past.length ? `<optgroup label="Séjours récents">${past.map(o).join("")}</optgroup>` : ""}`;
+}
+function currentMessage() {
+  const u = S.ui.msg;
+  if (u.bookingId === undefined) u.bookingId = defaultMsgBookingId();
+  const b = u.bookingId ? S.bookings.find(x => x.id === u.bookingId) || null : null;
+  if (u.bookingId && !b) u.bookingId = "";
+  const list = templates();
+  const t = list.find(x => x.key === u.key) || list[0];
+  const name = u.name !== null ? u.name : guestFirst(b);
+  const res = fillTemplate(t[u.lang] || "", msgValues(b, u.lang, name));
+  return { u, b, list, t, name, ...res };
+}
+function viewMessages() {
+  if (isLoading()) return loadingHTML();
+  const { u, b, list, t, name, html, missing, plain } = currentMessage();
+  const sentOn = b && b.sent && b.sent[t.key];
+  const info = S.settings.info || {};
+  const filled = INFO_FIELDS.filter(f => String(info[f.k] || "").trim()).length;
+  const tplItems = list.map(x => {
+    const s = b && b.sent && b.sent[x.key];
+    return `<button type="button" class="tpl" data-act="msg-tpl" data-k="${esc(x.key)}" aria-pressed="${x.key === t.key}"><span><b>${esc(x.title)}</b><small>${esc(x.when || (x.custom ? "Modèle personnel" : ""))}${x.edited ? " · modifié" : ""}</small></span>${s ? `<span class="pill good">${icon("check")}envoyé</span>` : ""}</button>`;
+  }).join("");
+  const canShare = STANDALONE && navigator.share;
+  const infoCard = `<section class="card" id="msg-info"><div class="card-head"><h3>Infos de l'appartement pour les messages</h3><span class="pill ${filled === INFO_FIELDS.length ? "good" : "sand"}">${filled} sur ${INFO_FIELDS.length} renseignées</span></div>
+    <p class="help" style="margin:0 0 12px">Ces informations remplissent automatiquement les modèles, dans les trois langues. Elles sont enregistrées dès que vous quittez le champ.</p>
+    <div class="grid2">${INFO_FIELDS.map(f => `<div class="field"><label for="mi-${f.k}">${f.l}</label><input id="mi-${f.k}" data-info="${f.k}" value="${esc(info[f.k] || "")}" placeholder="${esc(f.ph)}" autocomplete="off"></div>`).join("")}</div></section>`;
+  return viewHead("Messages aux voyageurs", { month: false, actions: `<button class="btn ghost" data-act="msg-new">${icon("plus")}Nouveau modèle</button>` })
+    + `<div class="cols" style="margin-bottom:16px">
+      <section class="card stack" style="gap:14px">
+        <div class="field"><label for="msg-bk">Réservation</label><select id="msg-bk" data-msg="bookingId">${msgBookingOptions(u.bookingId)}</select></div>
+        <div class="field"><label for="msg-name">Prénom à utiliser dans le message</label><input id="msg-name" data-msg="name" value="${esc(name)}" placeholder="ex. Sophie" autocomplete="off"><span class="help">Modifiable ici sans changer la réservation.</span></div>
+        <div class="field"><span class="lbl">Langue</span><div class="chips">${LANGS.map(l => `<button class="chip" data-act="msg-lang" data-v="${l.k}" aria-pressed="${u.lang === l.k}" ${l.k === "ar" ? 'lang="ar"' : ""}>${l.l}</button>`).join("")}</div></div>
+        <div class="field"><span class="lbl">Modèle</span><div class="tpl-list">${tplItems}</div></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h3>${esc(t.title)}</h3>${sentOn ? `<span class="pill good">${icon("check")}envoyé le ${fmtDate(sentOn, { day: "numeric", month: "long" })}</span>` : ""}</div>
+        ${missing.length ? `<div class="warnline" style="margin-bottom:10px">${icon("alert")}<span>${plural(missing.length, "information manquante", "informations manquantes")} : ${missing.map(k => PH[k]).join(", ")}. ${missing.some(k => INFO_FIELDS.some(f => f.k === k)) ? `<button class="linkbtn" data-act="msg-goinfo">Compléter les infos</button>` : ""}</span></div>` : ""}
+        <div class="msg-preview" dir="${u.lang === "ar" ? "rtl" : "ltr"}" lang="${u.lang}" id="msg-preview">${html || `<span class="muted">Ce modèle n'a pas encore de texte dans cette langue. Touchez « Modifier le modèle » pour l'écrire.</span>`}</div>
+        <div class="vact" style="margin-top:12px">
+          <button class="btn" data-act="msg-copy" ${plain.trim() ? "" : "disabled"}>${icon("copy")}Copier le message</button>
+          ${canShare ? `<button class="btn ghost" data-act="msg-share" ${plain.trim() ? "" : "disabled"}>${icon("upload")}Partager</button>` : ""}
+          <button class="btn ghost" data-act="msg-sent" ${b ? "" : "disabled"}>${sentOn ? "Marquer comme non envoyé" : `${icon("check")}Marquer comme envoyé`}</button>
+          <button class="btn ghost" data-act="msg-edit">Modifier le modèle</button>
+        </div>
+        <p class="xs muted" style="margin:10px 0 0">Collez ensuite le message dans Airbnb, Booking.com ou votre messagerie. L'application n'envoie rien elle-même.</p>
+      </section></div>` + infoCard;
+}
+let lastMsgTa = null;
+function scrollToPreview() { // sur téléphone, l'aperçu est sous la liste des modèles
+  if (!window.matchMedia("(max-width: 900px)").matches) return;
+  const el = $("#msg-preview"); if (el) setTimeout(() => el.closest(".card").scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+}
+function msgForm(t) {
+  const isNew = !t;
+  t = t ? { ...t } : { key: uid("m"), title: "", when: "", fr: "", en: "", ar: "", custom: true };
+  const ta = (l, lab) => `<div class="field"><label for="mf-${l}">${lab}</label><textarea id="mf-${l}" class="msg-ta" rows="9" ${l === "ar" ? 'dir="rtl" lang="ar"' : ""}>${esc(t[l] || "")}</textarea></div>`;
+  openModal(`<form class="mform" id="msg-form" novalidate>${mhead(isNew ? "Nouveau modèle" : "Modifier le modèle")}
+    <div class="m-body">
+      <div class="grid2"><div class="field"><label for="mf-title">Titre *</label><input id="mf-title" value="${esc(t.title)}" placeholder="ex. Arrivée tardive" ${isNew ? "autofocus" : ""}></div>
+      <div class="field"><label for="mf-when">Quand l'envoyer</label><input id="mf-when" value="${esc(t.when)}" placeholder="ex. La veille de l'arrivée"></div></div>
+      <div class="field"><span class="lbl">Insérer une information (au curseur)</span><div class="qchips">${Object.entries(PH).map(([k, l]) => `<button type="button" data-act="msg-ph" data-k="${k}">${esc(l)}</button>`).join("")}</div>
+        <span class="help">Les éléments entre accolades, comme {voyageur}, sont remplacés automatiquement.</span></div>
+      ${ta("fr", "Français")}${ta("en", "English")}${ta("ar", "العربية (arabe)")}
+    </div>
+    <div class="m-foot">${t.custom && !isNew ? `<button type="button" class="btn ghost left" data-act="msg-del" data-k="${esc(t.key)}" style="color:var(--bad)">Supprimer</button>` : ""}${!t.custom && t.edited ? `<button type="button" class="btn ghost left" data-act="msg-reset" data-k="${esc(t.key)}">Rétablir le texte d'origine</button>` : ""}<button type="button" class="btn ghost" data-act="close-modal">Annuler</button><button type="submit" class="btn">Enregistrer</button></div></form>`, {
+    onSubmit: async () => {
+      const x = { id: t.key, title: $("#mf-title").value.trim(), when: $("#mf-when").value.trim(), fr: $("#mf-fr").value, en: $("#mf-en").value, ar: $("#mf-ar").value, custom: !!t.custom };
+      if (!x.title) { toast("Donnez un titre au modèle."); return; }
+      if (t.custom) { const old = S.messages.find(m => m.id === t.key); if (old && old.createdAt) x.createdAt = old.createdAt; }
+      closeModal();
+      try { await putDoc("messages", x); S.ui.msg.key = t.key; toast(isNew ? "Modèle ajouté." : "Modèle enregistré."); } catch (e) {}
+    }
+  });
+  lastMsgTa = $("#mf-fr");
+}
+async function saveInfo(el) {
+  const next = JSON.parse(JSON.stringify(S.settings));
+  if (!isYm(next.startMonth)) next.startMonth = startMonth();
+  next.info = { ...(next.info || {}), [el.dataset.info]: el.value.trim() };
+  try { await putSettings(next); toast("Information enregistrée."); } catch (e) {}
+}
+
+/* =========================================================
    Vue : réglages et sauvegarde
    ========================================================= */
 function viewSettings() {
@@ -1472,7 +1686,7 @@ function viewSettings() {
     </section>
     <section class="card"><h3>Données d'exemple et effacement</h3>
       ${hasSample() ? `<p class="small" style="margin:0">Des données fictives marquées <span class="tag-sample">Exemple</span> sont présentes.</p><div><button class="btn small ghost" data-act="del-samples">Supprimer les exemples</button></div>` : `<p class="small muted" style="margin:0">Aucune donnée d'exemple.</p>`}
-      <p class="help" style="margin:0">Effacer tout supprime les réservations, dépenses et tâches (les réglages sont conservés). Exportez une sauvegarde avant.</p>
+      <p class="help" style="margin:0">Effacer tout supprime les réservations, dépenses et tâches (les réglages et les modèles de messages sont conservés). Exportez une sauvegarde avant.</p>
       <div><button class="btn small danger" data-act="wipe">Effacer toutes les données</button></div>
     </section>
   </div>`;
@@ -1561,7 +1775,7 @@ function bookingForm(b) {
     <div><span class="lbl">Résumé du séjour</span><div class="calcbox" id="bf-summary" style="margin-top:6px"></div></div>
     ${isNew ? `<label class="opt"><input type="checkbox" id="bf-tasks" checked><span><b>Créer les tâches habituelles</b><small>Préparer l'arrivée et vérifier le linge la veille ; organiser le ménage et contrôler l'appartement le jour du départ.</small></span></label>` : ""}
   </div>
-  <div class="m-foot">${isNew ? "" : `<button type="button" class="btn ghost left" data-act="del-booking" data-id="${b.id}" style="color:var(--bad)">Supprimer</button>`}<button type="button" class="btn ghost" data-act="close-modal">Annuler</button><button type="submit" class="btn">${isNew ? "Ajouter" : "Enregistrer"}</button></div></form>`;
+  <div class="m-foot">${isNew ? "" : `<button type="button" class="btn ghost left" data-act="del-booking" data-id="${b.id}" style="color:var(--bad)">Supprimer</button><button type="button" class="btn ghost" data-act="prep-msg" data-id="${b.id}">${icon("chat")}Message</button>`}<button type="button" class="btn ghost" data-act="close-modal">Annuler</button><button type="submit" class="btn">${isNew ? "Ajouter" : "Enregistrer"}</button></div></form>`;
   openModal(html, {
     onInput: () => updateBookingPreview(b),
     onSubmit: async () => {
@@ -1728,9 +1942,9 @@ function quickPay(b) {
     }
   });
 }
-function showCopyFallback(filename, text) {
+function showCopyFallback(filename, text, intro) {
   openModal(`<form class="mform" novalidate>${mhead("Copier les données")}<div class="m-body">
-    <p class="small" style="margin:0">Le téléchargement n'est pas disponible dans cette vue. Copiez le contenu ci-dessous et collez-le dans un fichier nommé <b>${esc(filename)}</b> (Bloc-notes, TextEdit…).</p>
+    <p class="small" style="margin:0">${intro || `Le téléchargement n'est pas disponible dans cette vue. Copiez le contenu ci-dessous et collez-le dans un fichier nommé <b>${esc(filename)}</b> (Bloc-notes, TextEdit…).`}</p>
     <textarea class="copyarea" id="copy-area" readonly>${esc(text)}</textarea></div>
     <div class="m-foot"><button type="button" class="btn ghost" data-act="close-modal">Fermer</button><button type="button" class="btn" data-act="copy-area">Copier</button></div></form>`, {});
 }
@@ -1801,7 +2015,7 @@ async function saveFile(filename, data) {
 }
 function backupData() {
   const strip = x => { const o = { ...x }; return o; };
-  return { app: "appartement-diabat", version: 1, exportedAt: new Date().toISOString(), settings: { ...S.settings, startMonth: startMonth() }, bookings: S.bookings.map(strip), expenses: S.expenses.map(strip), tasks: S.tasks.map(strip) };
+  return { app: "appartement-diabat", version: 1, exportedAt: new Date().toISOString(), settings: { ...S.settings, startMonth: startMonth() }, bookings: S.bookings.map(strip), expenses: S.expenses.map(strip), tasks: S.tasks.map(strip), messages: S.messages.map(strip) };
 }
 const stamp = () => todayStr();
 function monthsRange() {
@@ -1954,10 +2168,10 @@ function handleImport(file) {
     let d;
     try { d = JSON.parse(String(r.result)); } catch (e) { toast("Ce fichier n'est pas une sauvegarde lisible (.json attendu)."); return; }
     if (!d || typeof d !== "object" || (!Array.isArray(d.bookings) && !Array.isArray(d.expenses) && !Array.isArray(d.tasks))) { toast("Ce fichier ne ressemble pas à une sauvegarde de l'application."); return; }
-    const data = { settings: d.settings && typeof d.settings === "object" ? d.settings : null, bookings: sanitizeList(d.bookings, "b"), expenses: sanitizeList(d.expenses, "e"), tasks: sanitizeList(d.tasks, "t") };
+    const data = { settings: d.settings && typeof d.settings === "object" ? d.settings : null, bookings: sanitizeList(d.bookings, "b"), expenses: sanitizeList(d.expenses, "e"), tasks: sanitizeList(d.tasks, "t"), messages: Array.isArray(d.messages) ? sanitizeList(d.messages, "m") : null };
     confirmDialog({
       title: "Réimporter une sauvegarde",
-      body: `<p style="margin:0">Le fichier contient <b>${plural(data.bookings.length, "réservation")}</b>, <b>${plural(data.expenses.length, "dépense")}</b> et <b>${plural(data.tasks.length, "tâche")}</b>${d.exportedAt ? `, exportés le ${fmtDate(String(d.exportedAt).slice(0, 10), { day: "numeric", month: "long", year: "numeric" })}` : ""}.</p>`,
+      body: `<p style="margin:0">Le fichier contient <b>${plural(data.bookings.length, "réservation")}</b>, <b>${plural(data.expenses.length, "dépense")}</b> et <b>${plural(data.tasks.length, "tâche")}</b>${data.messages && data.messages.length ? `, plus ${plural(data.messages.length, "modèle de message", "modèles de messages")}` : ""}${d.exportedAt ? `, exportés le ${fmtDate(String(d.exportedAt).slice(0, 10), { day: "numeric", month: "long", year: "numeric" })}` : ""}.</p>`,
       extra: `<label class="opt"><input type="checkbox" id="im-replace" checked><span><b>Remplacer les données actuelles</b><small>Décochez pour ajouter le contenu du fichier à vos données (les éléments identiques sont mis à jour).</small></span></label>
         ${data.settings ? `<label class="opt"><input type="checkbox" id="im-settings" checked><span><b>Restaurer aussi les réglages</b><small>Loyer, taux, budget, taux de change…</small></span></label>` : ""}`,
       confirm: "Importer",
@@ -1969,6 +2183,10 @@ function handleImport(file) {
             for (const c of ["tasks", "expenses", "bookings"]) for (const x of S[c].slice()) if (!ids[c].has(x.id)) await delDoc(c, x.id);
           }
           for (const c of ["bookings", "expenses", "tasks"]) for (const x of data[c]) await putDoc(c, x);
+          if (data.messages) {
+            if (vals["im-replace"]) { const keep = new Set(data.messages.map(x => x.id)); for (const x of S.messages.slice()) if (!keep.has(x.id)) await delDoc("messages", x.id); }
+            for (const x of data.messages) await putDoc("messages", x);
+          }
           if (vals["im-settings"] && data.settings) await putSettings(mergeSettings(data.settings));
           toast("Sauvegarde importée.");
         } catch (e) {}
@@ -2009,6 +2227,29 @@ async function onAction(el) {
     case "new-task": taskForm(null, { date: el.dataset.date }); break;
     case "edit-task": { const t = find("tasks", id); if (t) taskForm(t); break; }
     case "close-modal": closeModal(); break;
+    case "prep-msg": S.ui.msg.bookingId = id; S.ui.msg.name = null; if (el.dataset.k) S.ui.msg.key = el.dataset.k; closeModal(); go("messages"); scrollToPreview(); break;
+    case "msg-tpl": S.ui.msg.key = el.dataset.k; renderView(); scrollToPreview(); break;
+    case "msg-lang": S.ui.msg.lang = el.dataset.v; renderView(); break;
+    case "msg-goinfo": { const c = $("#msg-info"); if (c) { c.scrollIntoView({ behavior: "smooth", block: "start" }); const f = $("#msg-info input"); if (f) setTimeout(() => f.focus({ preventScroll: true }), 300); } break; }
+    case "msg-copy": {
+      const m = currentMessage();
+      try { await navigator.clipboard.writeText(m.plain); toast(m.missing.length ? "Message copié. Pensez à compléter les informations entre crochets." : "Message copié : collez-le dans la messagerie."); }
+      catch (e) { showCopyFallback("message.txt", m.plain, "La copie automatique n'est pas possible ici. Sélectionnez le texte ci-dessous, puis copiez-le."); }
+      break;
+    }
+    case "msg-share": { const m = currentMessage(); try { await navigator.share({ text: m.plain }); } catch (e) {} break; }
+    case "msg-sent": {
+      const m = currentMessage(); if (!m.b) break;
+      const sent = { ...(m.b.sent || {}) };
+      if (sent[m.t.key]) delete sent[m.t.key]; else sent[m.t.key] = todayStr();
+      try { await putDoc("bookings", { ...m.b, sent }); toast(sent[m.t.key] ? "Marqué comme envoyé." : "Marque d'envoi retirée."); } catch (e) {}
+      break;
+    }
+    case "msg-edit": msgForm(currentMessage().t); break;
+    case "msg-new": msgForm(null); break;
+    case "msg-ph": { const ta = lastMsgTa && document.body.contains(lastMsgTa) ? lastMsgTa : $("#mf-fr"); if (ta) { ta.focus(); ta.setRangeText(`{${el.dataset.k}}`, ta.selectionStart, ta.selectionEnd, "end"); } break; }
+    case "msg-reset": { const k = el.dataset.k; confirmDialog({ title: "Rétablir le texte d'origine ?", body: `<p style="margin:0">Vos modifications de ce modèle seront remplacées par le texte proposé au départ, dans les trois langues.</p>`, confirm: "Rétablir", onConfirm: async () => { try { await delDoc("messages", k); toast("Texte d'origine rétabli."); } catch (e) {} } }); break; }
+    case "msg-del": { const k = el.dataset.k; confirmDialog({ title: "Supprimer ce modèle ?", body: `<p style="margin:0">Le modèle sera supprimé dans les trois langues.</p>`, danger: true, confirm: "Supprimer", onConfirm: async () => { try { await delDoc("messages", k); S.ui.msg.key = "arrivee"; toast("Modèle supprimé."); } catch (e) {} } }); break; }
     case "tk-template": { const i = $("#tf-title"); if (i) { i.value = el.dataset.v; i.focus(); } break; }
     case "del-booking": {
       const b = find("bookings", id); if (!b) break;
@@ -2058,12 +2299,16 @@ document.addEventListener("keydown", e => {
 document.addEventListener("input", e => {
   const t = e.target;
   if (t.dataset && t.dataset.filter) { S.ui.f[t.dataset.filter] = t.value; renderView(); return; }
+  if (t.dataset && t.dataset.msg === "name") { S.ui.msg.name = t.value; renderView(); return; }
   if (modal().contains(t) && modalInput) modalInput();
 });
+document.addEventListener("focusin", e => { if (e.target.classList && e.target.classList.contains("msg-ta")) lastMsgTa = e.target; });
 document.addEventListener("change", e => {
   const t = e.target;
   if (t.id === "import-file") { handleImport(t.files && t.files[0]); return; }
   if (t.dataset && t.dataset.set) { saveSetting(t); return; }
+  if (t.dataset && t.dataset.info) { saveInfo(t); return; }
+  if (t.dataset && t.dataset.msg === "bookingId") { S.ui.msg.bookingId = t.value; S.ui.msg.name = null; renderView(); return; }
   if (modal().contains(t) && modalInput) modalInput();
 });
 document.addEventListener("submit", e => {
