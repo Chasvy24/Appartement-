@@ -1459,28 +1459,28 @@ const INFO_FIELDS = [
   { k: "heure_depart", l: "Heure de départ", ph: "ex. 11:00" },
   { k: "wifi_nom", l: "Nom du Wi-Fi", ph: "" },
   { k: "wifi_mdp", l: "Mot de passe du Wi-Fi", ph: "" },
-  { k: "parking", l: "Indications pour la place de stationnement", ph: "ex. place n° 2, à droite de l'entrée" }
+  { k: "parking", l: "Où se garer", ph: "", long: true }
 ];
 const PH = { voyageur: "prénom du voyageur", arrivee: "date d'arrivée", depart: "date de départ", nuits: "nombre de nuits", voyageurs: "nombre de voyageurs", plateforme: "plateforme",
   hote: "signature", concierge: "conciergerie", telephone_concierge: "téléphone de la conciergerie", adresse: "adresse", localisation: "lien de localisation",
-  heure_arrivee: "heure d'arrivée", heure_depart: "heure de départ", wifi_nom: "nom du Wi-Fi", wifi_mdp: "mot de passe du Wi-Fi", parking: "indications de stationnement" };
+  heure_arrivee: "heure d'arrivée", heure_depart: "heure de départ", wifi_nom: "nom du Wi-Fi", wifi_mdp: "mot de passe du Wi-Fi", parking: "où se garer" };
 const MSG_DEFAULTS = [
   { key: "bienvenue", title: "Confirmation de réservation", when: "Dès la réservation confirmée",
-    fr: "Bonjour {voyageur},\n\nMerci pour votre réservation ! Nous sommes ravis de vous accueillir à Diabat, près d'Essaouira, du {arrivee} au {depart} ({nuits} nuits).\n\nL'appartement dispose de deux chambres, d'une terrasse partagée et d'une place de stationnement.\n\nQuelques jours avant votre arrivée, nous vous enverrons toutes les informations pratiques. N'hésitez pas à nous écrire si vous avez des questions.\n\nÀ bientôt,\n{hote}",
-    en: "Hello {voyageur},\n\nThank you for your booking! We look forward to welcoming you to Diabat, near Essaouira, from {arrivee} to {depart} ({nuits} nights).\n\nThe apartment has two bedrooms, a shared terrace and a parking space.\n\nA few days before your arrival, we will send you all the practical information. Feel free to message us if you have any questions.\n\nSee you soon,\n{hote}",
-    ar: "مرحباً {voyageur}،\n\nشكراً على حجزكم! يسعدنا استقبالكم في ديابات، قرب الصويرة، من {arrivee} إلى {depart} (عدد الليالي: {nuits}).\n\nتضم الشقة غرفتي نوم، وتراساً مشتركاً، ومكاناً مخصصاً لركن السيارة.\n\nسنرسل إليكم جميع المعلومات العملية قبل وصولكم ببضعة أيام. لا تترددوا في مراسلتنا إن كانت لديكم أي أسئلة.\n\nإلى اللقاء قريباً،\n{hote}" },
+    fr: "Bonjour {voyageur},\n\nMerci pour votre réservation ! Nous sommes ravis de vous accueillir à Diabat, près d'Essaouira, du {arrivee} au {depart} ({nuits} nuits).\n\nL'appartement dispose de deux chambres et d'une terrasse partagée.\n\nQuelques jours avant votre arrivée, nous vous enverrons toutes les informations pratiques. N'hésitez pas à nous écrire si vous avez des questions.\n\nÀ bientôt,\n{hote}",
+    en: "Hello {voyageur},\n\nThank you for your booking! We look forward to welcoming you to Diabat, near Essaouira, from {arrivee} to {depart} ({nuits} nights).\n\nThe apartment has two bedrooms and a shared terrace.\n\nA few days before your arrival, we will send you all the practical information. Feel free to message us if you have any questions.\n\nSee you soon,\n{hote}",
+    ar: "مرحباً {voyageur}،\n\nشكراً على حجزكم! يسعدنا استقبالكم في ديابات، قرب الصويرة، من {arrivee} إلى {depart} (عدد الليالي: {nuits}).\n\nتضم الشقة غرفتي نوم وتراساً مشتركاً.\n\nسنرسل إليكم جميع المعلومات العملية قبل وصولكم ببضعة أيام. لا تترددوا في مراسلتنا إن كانت لديكم أي أسئلة.\n\nإلى اللقاء قريباً،\n{hote}" },
   { key: "arrivee", title: "Instructions d'arrivée", when: "2 à 3 jours avant l'arrivée",
-    fr: "Bonjour {voyageur},\n\nVotre séjour approche ! Voici les informations pour votre arrivée le {arrivee} :\n\n• Arrivée à partir de {heure_arrivee}\n• Adresse : {adresse}\n• Localisation : {localisation}\n• Clés : {concierge} vous accueillera et vous remettra les clés. Merci d'indiquer votre heure d'arrivée au {telephone_concierge}.\n• Stationnement : une place est réservée pour vous. {parking}\n\nBon voyage et à très bientôt,\n{hote}",
-    en: "Hello {voyageur},\n\nYour stay is coming up! Here is everything you need for your arrival on {arrivee}:\n\n• Check-in from {heure_arrivee}\n• Address: {adresse}\n• Location: {localisation}\n• Keys: {concierge} will welcome you and hand over the keys. Please share your arrival time at {telephone_concierge}.\n• Parking: a parking space is reserved for you. {parking}\n\nSafe travels, see you very soon,\n{hote}",
-    ar: "مرحباً {voyageur}،\n\nاقترب موعد إقامتكم! إليكم المعلومات الخاصة بوصولكم يوم {arrivee}:\n\n• الوصول ابتداءً من الساعة {heure_arrivee}\n• العنوان: {adresse}\n• الموقع على الخريطة: {localisation}\n• المفاتيح: سيتم استقبالكم وتسليمكم المفاتيح من طرف {concierge}. يُرجى إعلامنا بموعد وصولكم على الرقم {telephone_concierge}.\n• ركن السيارة: يوجد مكان مخصص لكم. {parking}\n\nرحلة سعيدة، وإلى اللقاء قريباً،\n{hote}" },
+    fr: "Bonjour {voyageur},\n\nVotre séjour approche ! Voici les informations pour votre arrivée le {arrivee} :\n\n• Arrivée à partir de {heure_arrivee}\n• Adresse : {adresse}\n• Localisation : {localisation}\n• Clés : {concierge} vous accueillera et vous remettra les clés. Merci d'indiquer votre heure d'arrivée au {telephone_concierge}.\n• Stationnement : {parking}\n\nBon voyage et à très bientôt,\n{hote}",
+    en: "Hello {voyageur},\n\nYour stay is coming up! Here is everything you need for your arrival on {arrivee}:\n\n• Check-in from {heure_arrivee}\n• Address: {adresse}\n• Location: {localisation}\n• Keys: {concierge} will welcome you and hand over the keys. Please share your arrival time at {telephone_concierge}.\n• Parking: {parking}\n\nSafe travels, see you very soon,\n{hote}",
+    ar: "مرحباً {voyageur}،\n\nاقترب موعد إقامتكم! إليكم المعلومات الخاصة بوصولكم يوم {arrivee}:\n\n• الوصول ابتداءً من الساعة {heure_arrivee}\n• العنوان: {adresse}\n• الموقع على الخريطة: {localisation}\n• المفاتيح: سيتم استقبالكم وتسليمكم المفاتيح من طرف {concierge}. يُرجى إعلامنا بموعد وصولكم على الرقم {telephone_concierge}.\n• ركن السيارة: {parking}\n\nرحلة سعيدة، وإلى اللقاء قريباً،\n{hote}" },
   { key: "wifi", title: "Wi-Fi et bienvenue sur place", when: "Le jour de l'arrivée",
     fr: "Bienvenue {voyageur} !\n\nNous espérons que vous êtes bien installés.\n\n• Wi-Fi : {wifi_nom}\n• Mot de passe : {wifi_mdp}\n\nLa terrasse est partagée avec les autres appartements de la maison : merci d'y garder le calme le soir.\nPour toute question pendant le séjour : {telephone_concierge}\n\nTrès bon séjour à Diabat !\n{hote}",
     en: "Welcome {voyageur}!\n\nWe hope you have settled in well.\n\n• Wi-Fi: {wifi_nom}\n• Password: {wifi_mdp}\n\nThe terrace is shared with the other apartments in the house, so please keep noise down in the evening.\nFor any question during your stay: {telephone_concierge}\n\nEnjoy your stay in Diabat!\n{hote}",
     ar: "أهلاً وسهلاً بكم {voyageur}!\n\nنتمنى أن تكونوا قد استقررتم بشكل جيد.\n\n• شبكة الواي فاي: {wifi_nom}\n• كلمة المرور: {wifi_mdp}\n\nالتراس مشترك مع باقي شقق المنزل، لذا نرجو الحفاظ على الهدوء في المساء.\nلأي سؤال خلال إقامتكم: {telephone_concierge}\n\nنتمنى لكم إقامة ممتعة في ديابات!\n{hote}" },
   { key: "regles", title: "Règles de la maison", when: "Avant ou à l'arrivée",
-    fr: "Bonjour {voyageur},\n\nPour que tout se passe au mieux, voici quelques règles de la maison :\n\n• L'appartement accueille 4 personnes au maximum.\n• La terrasse est partagée avec les autres appartements de la maison : merci de la laisser propre et de respecter le calme, surtout le soir.\n• Merci de vous garer uniquement sur la place réservée à l'appartement.\n• Départ avant {heure_depart} le {depart}.\n\nMerci beaucoup et bon séjour,\n{hote}",
-    en: "Hello {voyageur},\n\nTo make sure everything goes smoothly, here are a few house rules:\n\n• The apartment accommodates up to 4 guests.\n• The terrace is shared with the other apartments in the house: please keep it tidy and quiet, especially in the evening.\n• Please park only in the space reserved for the apartment.\n• Check-out before {heure_depart} on {depart}.\n\nThank you and enjoy your stay,\n{hote}",
-    ar: "مرحباً {voyageur}،\n\nلكي تمر إقامتكم في أفضل الظروف، إليكم بعض قواعد المنزل:\n\n• تتسع الشقة لأربعة أشخاص كحد أقصى.\n• التراس مشترك مع باقي شقق المنزل: نرجو الحفاظ على نظافته واحترام الهدوء، خاصة في المساء.\n• يُرجى ركن السيارة في المكان المخصص للشقة فقط.\n• المغادرة قبل الساعة {heure_depart} يوم {depart}.\n\nشكراً جزيلاً، وإقامة طيبة،\n{hote}" },
+    fr: "Bonjour {voyageur},\n\nPour que tout se passe au mieux, voici quelques règles de la maison :\n\n• L'appartement accueille 4 personnes au maximum.\n• La terrasse est partagée avec les autres appartements de la maison : merci de la laisser propre et de respecter le calme, surtout le soir.\n• Stationnement : {parking}\n• Départ avant {heure_depart} le {depart}.\n\nMerci beaucoup et bon séjour,\n{hote}",
+    en: "Hello {voyageur},\n\nTo make sure everything goes smoothly, here are a few house rules:\n\n• The apartment accommodates up to 4 guests.\n• The terrace is shared with the other apartments in the house: please keep it tidy and quiet, especially in the evening.\n• Parking: {parking}\n• Check-out before {heure_depart} on {depart}.\n\nThank you and enjoy your stay,\n{hote}",
+    ar: "مرحباً {voyageur}،\n\nلكي تمر إقامتكم في أفضل الظروف، إليكم بعض قواعد المنزل:\n\n• تتسع الشقة لأربعة أشخاص كحد أقصى.\n• التراس مشترك مع باقي شقق المنزل: نرجو الحفاظ على نظافته واحترام الهدوء، خاصة في المساء.\n• ركن السيارة: {parking}\n• المغادرة قبل الساعة {heure_depart} يوم {depart}.\n\nشكراً جزيلاً، وإقامة طيبة،\n{hote}" },
   { key: "depart", title: "Rappel du départ", when: "La veille du départ",
     fr: "Bonjour {voyageur},\n\nNous espérons que vous profitez de votre séjour ! Petit rappel : le départ est prévu demain, {depart}, avant {heure_depart}.\n\nAvant de partir, merci de :\n• fermer les fenêtres et éteindre les lumières et le chauffage ;\n• laisser les clés comme convenu avec {concierge}.\n\nMerci et bon retour,\n{hote}",
     en: "Hello {voyageur},\n\nWe hope you are enjoying your stay! A quick reminder: check-out is tomorrow, {depart}, before {heure_depart}.\n\nBefore leaving, please:\n• close the windows and switch off the lights and heating;\n• leave the keys as agreed with {concierge}.\n\nThank you and safe travels home,\n{hote}",
@@ -1507,6 +1507,8 @@ function fmtLang(iso, lang) {
 function msgValues(b, lang, name) {
   const info = S.settings.info || {}, v = {};
   for (const f of INFO_FIELDS) v[f.k] = String(info[f.k] || "").trim();
+  const pk = lang !== "fr" ? String(info["parking_" + lang] || "").trim() : "";
+  if (pk) v.parking = pk;
   v.voyageur = String(name || "").trim();
   if (b) {
     const c = calcBooking(b);
@@ -1567,11 +1569,13 @@ function currentMessage() {
   const t = list.find(x => x.key === u.key) || list[0];
   const name = u.name !== null ? u.name : guestFirst(b);
   const res = fillTemplate(t[u.lang] || "", msgValues(b, u.lang, name));
+  const info = S.settings.info || {};
+  res.parkingFallback = u.lang !== "fr" && (t[u.lang] || "").includes("{parking}") && !String(info["parking_" + u.lang] || "").trim() && !!String(info.parking || "").trim();
   return { u, b, list, t, name, ...res };
 }
 function viewMessages() {
   if (isLoading()) return loadingHTML();
-  const { u, b, list, t, name, html, missing, plain } = currentMessage();
+  const { u, b, list, t, name, html, missing, plain, parkingFallback } = currentMessage();
   const sentOn = b && b.sent && b.sent[t.key];
   const info = S.settings.info || {};
   const filled = INFO_FIELDS.filter(f => String(info[f.k] || "").trim()).length;
@@ -1582,7 +1586,9 @@ function viewMessages() {
   const canShare = STANDALONE && navigator.share;
   const infoCard = `<section class="card" id="msg-info"><div class="card-head"><h3>Infos de l'appartement pour les messages</h3><span class="pill ${filled === INFO_FIELDS.length ? "good" : "sand"}">${filled} sur ${INFO_FIELDS.length} renseignées</span></div>
     <p class="help" style="margin:0 0 12px">Ces informations remplissent automatiquement les modèles, dans les trois langues. Elles sont enregistrées dès que vous quittez le champ.</p>
-    <div class="grid2">${INFO_FIELDS.map(f => `<div class="field"><label for="mi-${f.k}">${f.l}</label><input id="mi-${f.k}" data-info="${f.k}" value="${esc(info[f.k] || "")}" placeholder="${esc(f.ph)}" autocomplete="off"></div>`).join("")}</div></section>`;
+    <div class="grid2">${INFO_FIELDS.filter(f => !f.long).map(f => `<div class="field"><label for="mi-${f.k}">${f.l}</label><input id="mi-${f.k}" data-info="${f.k}" value="${esc(info[f.k] || "")}" placeholder="${esc(f.ph)}" autocomplete="off"></div>`).join("")}
+      <div class="field" style="grid-column:1/-1"><span class="lbl">Où se garer (texte libre)</span><span class="help">Expliquez où les voyageurs peuvent se garer : rue, parking, repères… Écrivez au moins la version française ; l'anglais et l'arabe sont facultatifs.</span>
+        <div class="grid3">${[["parking", "Français", "", "ex. Pas de place réservée : on peut se garer dans la rue devant la maison ou au parking du village…"], ["parking_en", "English", "", "Facultatif : version anglaise"], ["parking_ar", "العربية", 'dir="rtl" lang="ar"', "اختياري: النص بالعربية"]].map(([k, l, a, ph]) => `<div class="field"><label for="mi-${k}">${l}</label><textarea id="mi-${k}" data-info="${k}" rows="4" ${a} placeholder="${esc(ph)}">${esc(info[k] || "")}</textarea></div>`).join("")}</div></div></div></section>`;
   return viewHead("Messages aux voyageurs", { month: false, actions: `<button class="btn ghost" data-act="msg-new">${icon("plus")}Nouveau modèle</button>` })
     + `<div class="cols" style="margin-bottom:16px">
       <section class="card stack" style="gap:14px">
@@ -1593,6 +1599,7 @@ function viewMessages() {
       </section>
       <section class="card">
         <div class="card-head"><h3>${esc(t.title)}</h3>${sentOn ? `<span class="pill good">${icon("check")}envoyé le ${fmtDate(sentOn, { day: "numeric", month: "long" })}</span>` : ""}</div>
+        ${parkingFallback ? `<div class="warnline" style="margin-bottom:10px">${icon("info")}<span>Le texte « Où se garer » n'est pas encore écrit en ${u.lang === "en" ? "anglais" : "arabe"} : la version française est utilisée. <button class="linkbtn" data-act="msg-goinfo" data-k="parking_${u.lang}">L'écrire</button></span></div>` : ""}
         ${missing.length ? `<div class="warnline" style="margin-bottom:10px">${icon("alert")}<span>${plural(missing.length, "information manquante", "informations manquantes")} : ${missing.map(k => PH[k]).join(", ")}. ${missing.some(k => INFO_FIELDS.some(f => f.k === k)) ? `<button class="linkbtn" data-act="msg-goinfo">Compléter les infos</button>` : ""}</span></div>` : ""}
         <div class="msg-preview" dir="${u.lang === "ar" ? "rtl" : "ltr"}" lang="${u.lang}" id="msg-preview">${html || `<span class="muted">Ce modèle n'a pas encore de texte dans cette langue. Touchez « Modifier le modèle » pour l'écrire.</span>`}</div>
         <div class="vact" style="margin-top:12px">
@@ -1675,7 +1682,7 @@ function viewSettings() {
       <p class="okline">Exemple : 4 500 MAD ≈ <b>${chf(4500)}</b></p>
     </section>
     <section class="card"><h3>L'appartement</h3>
-      <p class="small" style="margin:0">Diabat, près d'Essaouira · 2 chambres · terrasse partagée · place de stationnement.</p>
+      <p class="small" style="margin:0">Diabat, près d'Essaouira · 2 chambres · terrasse partagée. Les indications pour se garer sont dans l'onglet Messages.</p>
       <div class="grid2">${f("s-capacity", "Capacité maximale", s.capacity, "pers.", "Un avertissement s'affiche si une réservation dépasse ce nombre.")}</div>
     </section>
     <section class="card" id="sauvegarde"><h3>${icon("download", 'width="18" height="18"')} Sauvegarde et export</h3>
@@ -2230,7 +2237,7 @@ async function onAction(el) {
     case "prep-msg": S.ui.msg.bookingId = id; S.ui.msg.name = null; if (el.dataset.k) S.ui.msg.key = el.dataset.k; closeModal(); go("messages"); scrollToPreview(); break;
     case "msg-tpl": S.ui.msg.key = el.dataset.k; renderView(); scrollToPreview(); break;
     case "msg-lang": S.ui.msg.lang = el.dataset.v; renderView(); break;
-    case "msg-goinfo": { const c = $("#msg-info"); if (c) { c.scrollIntoView({ behavior: "smooth", block: "start" }); const f = $("#msg-info input"); if (f) setTimeout(() => f.focus({ preventScroll: true }), 300); } break; }
+    case "msg-goinfo": { const c = $("#msg-info"); if (c) { const f = el.dataset.k ? $("#mi-" + el.dataset.k) : $("#msg-info input"); (f || c).scrollIntoView({ behavior: "smooth", block: "center" }); if (f) setTimeout(() => f.focus({ preventScroll: true }), 350); } break; }
     case "msg-copy": {
       const m = currentMessage();
       try { await navigator.clipboard.writeText(m.plain); toast(m.missing.length ? "Message copié. Pensez à compléter les informations entre crochets." : "Message copié : collez-le dans la messagerie."); }

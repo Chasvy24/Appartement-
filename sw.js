@@ -1,7 +1,7 @@
-// Appartement Diabat : fonctionnement hors connexion. Version 827271e5d8
+// Appartement Diabat : fonctionnement hors connexion. Version 54bcefbf26
 // Aucune donnée personnelle ne passe par ce fichier : elles restent dans le stockage du téléphone.
 const PREFIX = 'diabat-';
-const CACHE = PREFIX + '827271e5d8';
+const CACHE = PREFIX + '54bcefbf26';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
